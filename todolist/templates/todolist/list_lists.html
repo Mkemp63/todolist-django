@@ -1,0 +1,17 @@
+{% extends 'todolist/base.html' %}
+
+{% block content %}
+    {% for list in lists %}
+        <div class="list">
+            <div class="date">
+                <p>placeholder for last edited</p>
+            </div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'item_new' %}"><span class="glyphicon glyphicon-plus"></span></a>
+                    <a href="{% url 'list_remove' pk=list.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+                {% endif %}
+                <h1><a href="{%  url 'list_detail' pk=list.pk %}">{{ list.list_title }}</a></h1>
+            <p> <br/></p>
+        </div>
+    {% endfor %}
+{% endblock %}
