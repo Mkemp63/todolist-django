@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
+from django import template
 
+
+register = template.Library()
 
 class TodoList(models.Model):
     list_title = models.CharField(max_length=30)
@@ -18,11 +21,14 @@ class TodoList(models.Model):
     def __str__(self):
         return self.list_title
 
+    def get_items(self):
+        return self.item_set.all()
+
 
 class TodoItem(models.Model):
-    item_title = models.CharField(max_length=200)
+    item_title = models.CharField(max_length=200, null=False, blank=False, default="Unnamed")
     item_description = models.TextField(max_length=200, null=True, blank=True)
-    item_list = models.ForeignKey(TodoList, on_delete=models.DO_NOTHING, blank=True, null=True)
+    item_list = models.ForeignKey(TodoList, related_name="items", on_delete=models.DO_NOTHING, default=6)
     due = models.DateTimeField(null=True, blank=True)
     done = models.BooleanField(default=False)
     modified_date = models.DateTimeField(
@@ -35,5 +41,3 @@ class TodoItem(models.Model):
 
     def __str__(self):
         return self.item_title
-
-

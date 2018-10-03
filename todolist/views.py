@@ -5,6 +5,7 @@ from .models import TodoItem
 from .models import TodoList
 from .forms import ItemForm
 from .forms import ListForm
+from .forms import ToggleForm
 
 
 def item_list(request):
@@ -39,8 +40,6 @@ def item_edit(request, pk):
     if request.method == "POST":
         form = ItemForm(request.POST, instance=item)
         if form.is_valid():
-            if not item.item_list:
-                item.item_list == "unlisted"
             item = form.save(commit=False)
             item.author = request.user
             item.modified_date = timezone.now()
@@ -58,6 +57,21 @@ def item_remove(request, pk):
     return redirect('item_list')
 
 
+def item_toggle(request, pk):
+    item = get_object_or_404(TodoItem, pk=pk)
+    if request.method == "PUT":
+        form = ToggleForm(request.POST)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.modified_date = timezone.now()
+            item.author = request.user
+            item.save()
+            item.done = not item.done
+    else:
+        form = ToggleForm(instance=item)
+    return render(request, 'todolist/item_toggle.html', {'form': form})
+
+
 def list_list(request):
     lists = TodoList.objects.order_by('list_priority')
     return render(request, 'todolist/list_lists.html', {'lists': lists})
@@ -65,7 +79,8 @@ def list_list(request):
 
 def list_detail(request, pk):
     list = get_object_or_404(TodoList, pk=pk)
-    return render(request, 'todolist/list_detail.html', {'list': list})
+    items = list.items.all()
+    return render(request, 'todolist/list_detail.html', {'list': list, 'items': items})
 
 
 
@@ -97,7 +112,7 @@ def list_edit(request, pk):
             list.save()
             return redirect('list_detail', pk=list.pk)
     else:
-        form = ItemForm(instance=list)
+        form = ListForm(instance=list)
     return render(request, 'todolist/list_edit.html', {'form': form})
 
 
@@ -107,4 +122,5 @@ def list_remove(request, pk):
     list = get_object_or_404(TodoList, pk=pk)
     list.delete()
     return redirect('list_list')
+
 

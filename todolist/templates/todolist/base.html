@@ -7,19 +7,24 @@
         <link rel="stylesheet" href="{% static 'css/todolist.css' %}">
     </head>
     <body>
-    <div class="page-header">
-        {% if user.is_authenticated %}
-        <a href="{% url 'list_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
-        {% endif %}
-        <h1><a href="/">To-do</a></h1>
-    </div>
-    <div class="content container">
-        <div class="row">
-            <div class="col-md-8">
-            {% block content %}
-            {% endblock %}
+        <div class="page-header">
+            {% if user.is_authenticated %}
+                <a href="{% url 'list_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+                <a href="{% url 'item_list' %}" class="top-menu"><span class="glyphicon glyphicon-th"></span></a>
+                <a href="{% url 'list_list' %}" class="top-menu"><span class="glyphicon glyphicon-th-list"></span></a>
+            {% endif %}
+            <h1><a href="/">To-do</a></h1>
+        </div>
+        <div class="content container">
+            <div class="row">
+                <div class="col-md-8">
+                {% block content %}
+                {% endblock %}
+                </div>
             </div>
         </div>
-    </div>
-</body>
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="{% static 'js/app.js' %}"></script>
+        {% block javascript %}{% endblock %}
+    </body>
 </html>
