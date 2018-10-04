@@ -20,9 +20,3 @@ class ItemForm(forms.ModelForm):
         super(ItemForm, self).__init__(*args, **kwargs)
         self.fields['item_list'].queryset = TodoList.objects.all()
 
-
-class ToggleForm(forms.ModelForm):
-
-    class Meta:
-        model = TodoItem
-        fields = ('done',)

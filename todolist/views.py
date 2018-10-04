@@ -5,7 +5,8 @@ from .models import TodoItem
 from .models import TodoList
 from .forms import ItemForm
 from .forms import ListForm
-from .forms import ToggleForm
+from django.shortcuts import render_to_response
+
 
 
 def item_list(request):
@@ -57,19 +58,13 @@ def item_remove(request, pk):
     return redirect('item_list')
 
 
-def item_toggle(request, pk):
+@login_required
+def item_toggle(request, pk, list_pk):
     item = get_object_or_404(TodoItem, pk=pk)
-    if request.method == "PUT":
-        form = ToggleForm(request.POST)
-        if form.is_valid():
-            item = form.save(commit=False)
-            item.modified_date = timezone.now()
-            item.author = request.user
-            item.save()
-            item.done = not item.done
-    else:
-        form = ToggleForm(instance=item)
-    return render(request, 'todolist/item_toggle.html', {'form': form})
+    item.done = not item.done
+    item.save()
+    list_detail(request, list_pk)
+    return redirect('list_detail', pk=list_pk)
 
 
 def list_list(request):
@@ -81,7 +76,6 @@ def list_detail(request, pk):
     list = get_object_or_404(TodoList, pk=pk)
     items = list.items.all()
     return render(request, 'todolist/list_detail.html', {'list': list, 'items': items})
-
 
 
 @login_required
@@ -123,4 +117,20 @@ def list_remove(request, pk):
     list.delete()
     return redirect('list_list')
 
+
+def statistics(request):
+    xdata = ["Apple", "Apricot", "Avocado", "Banana", "Boysenberries", "Blueberries", "Dates", "Grapefruit", "Kiwi",
+             "Lemon"]
+    ydata = [52, 48, 160, 94, 75, 71, 490, 82, 46, 17]
+
+    extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
+    chartdata = {'x': xdata, 'y1': ydata, 'extra1': extra_serie}
+    charttype = "pieChart"
+
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+    }
+
+    return render_to_response(request, 'todolist/statistics.html', data)
 

@@ -15,19 +15,22 @@
         </div>
     {% endif %}
         <h1> {{ list.list_title }}</h1>
-        <p>placeholder</p>
+        <p>Last modified</p>
     </div>
     {% for item in items %}
         <div class="item">
             <div class="date">
                 <p>Due: {{ item.due }}</p>
-                <p>{{ item.pk }}</p>
             </div>
             {% if item.done == True %}
-                <a class="btn btn-default pull-right" href="{% url 'item_toggle' pk=item.pk %}"><span class="glyphicon glyphicon-repeat"></span></a>
+                {% if user.is_authenticated %}
+                    <a class="btn btn-default pull-right" href="{% url 'item_toggle' pk=item.pk list_pk=list.pk %}"><span class="glyphicon glyphicon-repeat"></span></a>
+                {% endif %}
                 <strike><h1><a href="{%  url 'item_detail' pk=item.pk %}">{{ item.item_title }}</a></h1></strike>
             {% else %}
-                <a class="btn btn-default pull-right" href="{% url 'item_toggle' pk=item.pk %}"><span class="glyphicon glyphicon-check"></span></a>
+                {% if user.is_authenticated %}
+                    <a class="btn btn-default pull-right" href="{% url 'item_toggle' pk=item.pk list_pk=list.pk %}"><span class="glyphicon glyphicon-check"></span></a>
+                {% endif %}
                 <h1><a href="{%  url 'item_detail' pk=item.pk %}">{{ item.item_title }}</a></h1>
             {% endif %}
             <p>{{ item.item_description}}</p>

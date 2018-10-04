@@ -1,38 +1,11 @@
 {% extends 'todolist/base.html' %}
 
-{%  block javascript %}
-    <script>
-        $.ajaxFunction = function(){
-
-    var boolean1 = $("#id_done").val(),
-        csrf_token = $("#csrf_token").val();
-
-    data_send = {
-                "boolean1": boolean1,
-                "csrfmiddlewaretoken": csrf_token
-            };
-
-    //jquery
-    $.ajax({
-            type: "post",
-            url: $("/url/ajax/").val(),
-            data: data_send,
-            success: function(data_receive){
-                if(data['boolean1']==true){
-                    data['boolean1'] = false
-                };
-
-            }
-    });
-}
-    </script>
-{% endblock %}
 
 {% block content %}
     <h1>Toggle</h1>
     <form method="POST" class="item-form">
         {% csrf_token %}
-        {{ form.as_p }}
         <button type="submit" class="save btn btn-default" href="">Save</button>
+        <b>toggless</b>
     </form>
 {% endblock %}
