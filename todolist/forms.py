@@ -20,3 +20,7 @@ class ItemForm(forms.ModelForm):
         super(ItemForm, self).__init__(*args, **kwargs)
         self.fields['item_list'].queryset = TodoList.objects.all()
 
+class SearchForm(forms.Form):
+    q = forms.CharField(
+        widget=forms.widgets.TextInput(attrs={'size': 35})
+    )

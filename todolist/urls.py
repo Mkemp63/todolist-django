@@ -14,5 +14,5 @@ urlpatterns = [
     path('list/<int:pk>/remove/', views.list_remove, name='list_remove'),
     path('item/<int:list_pk>/<int:pk>/toggle', views.item_toggle, name='item_toggle'),
     path('statistics/', views.statistics, name='statistics'),
-
+    path('item/<int:pk>/toggle/', views.item_toggle_listless, name='item_toggle_listless'),
 ]

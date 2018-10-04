@@ -5,7 +5,10 @@ from .models import TodoItem
 from .models import TodoList
 from .forms import ItemForm
 from .forms import ListForm
-from django.shortcuts import render_to_response
+from django.db.models import Q
+from .forms import SearchForm
+from chartit import DataPool, Chart
+
 
 
 
@@ -64,8 +67,14 @@ def item_toggle(request, pk, list_pk):
     item.done = not item.done
     item.save()
     list_detail(request, list_pk)
-    return redirect('list_detail', pk=list_pk)
+    return redirect('item_toggle_items', pk=list_pk)
 
+
+def item_toggle_listless(request, pk):
+    item = get_object_or_404(TodoItem, pk=pk)
+    item.done = not item.done
+    item.save()
+    return redirect('item_list')
 
 def list_list(request):
     lists = TodoList.objects.order_by('list_priority')
@@ -93,7 +102,6 @@ def list_new(request):
     return render(request, 'todolist/list_edit.html', {'form': form})
 
 
-
 @login_required
 def list_edit(request, pk):
     list = get_object_or_404(TodoList, pk=pk)
@@ -110,7 +118,6 @@ def list_edit(request, pk):
     return render(request, 'todolist/list_edit.html', {'form': form})
 
 
-
 @login_required
 def list_remove(request, pk):
     list = get_object_or_404(TodoList, pk=pk)
@@ -119,18 +126,5 @@ def list_remove(request, pk):
 
 
 def statistics(request):
-    xdata = ["Apple", "Apricot", "Avocado", "Banana", "Boysenberries", "Blueberries", "Dates", "Grapefruit", "Kiwi",
-             "Lemon"]
-    ydata = [52, 48, 160, 94, 75, 71, 490, 82, 46, 17]
-
-    extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
-    chartdata = {'x': xdata, 'y1': ydata, 'extra1': extra_serie}
-    charttype = "pieChart"
-
-    data = {
-        'charttype': charttype,
-        'chartdata': chartdata,
-    }
-
-    return render_to_response(request, 'todolist/statistics.html', data)
+    return render(request, 'todolist/statistics.html')
 
