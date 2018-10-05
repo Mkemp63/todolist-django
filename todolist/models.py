@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 
 
-
 class TodoList(models.Model):
     list_title = models.CharField(max_length=30, null=False)
     list_priority = models.IntegerField(null=False)
@@ -25,12 +24,12 @@ class TodoItem(models.Model):
     due = models.DateTimeField(null=True, blank=True)
     done = models.BooleanField(default=False)
     modified_date = models.DateTimeField(
-            default=timezone.now, null=True, blank=True)
+        default=timezone.now, null=True, blank=True)
     created_date = models.DateTimeField(
-            default=timezone.now)
+        default=timezone.now)
 
     class Meta:
-        ordering = ["due"]
+        ordering = ["-due"]
 
     def __str__(self):
         return self.item_title
