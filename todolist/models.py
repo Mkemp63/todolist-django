@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 
+
 class TodoList(models.Model):
     list_title = models.CharField(max_length=30, null=False)
     list_priority = models.IntegerField(null=False)

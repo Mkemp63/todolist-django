@@ -2,10 +2,20 @@
 <html>
     <head>
         <title>To-do</title>
+        <!-- Resources needed for all pages-->
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="{% static 'css/todolist.css' %}">
+        <!-- Resources for chart-->
+        <script src="https://code.highcharts.com/highcharts.src.js"></script>
+        <link rel=”stylesheet” href=”//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css”>
+
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
     </head>
+
     <body>
         <div class="page-header">
             {% if user.is_authenticated %}
@@ -20,12 +30,9 @@
             <div class="row">
                 <div class="col-md-8">
                 {% block content %}
-                {% endblock %}
+                {% endblock content %}
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-        <script src="{% static 'js/app.js' %}"></script>
-        {% block javascript %}{% endblock %}
     </body>
 </html>

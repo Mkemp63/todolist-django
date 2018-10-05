@@ -1,22 +1,19 @@
 from django import forms
-
 from .models import *
 
 
-class ListForm(forms.ModelForm):
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
+
+class ListForm(forms.ModelForm):
     class Meta:
         model = TodoList
         fields = ('list_title', 'list_priority')
 
 
 class ItemForm(forms.ModelForm):
-
     class Meta:
         model = TodoItem
         fields = ('item_title', 'item_description', 'due', 'done')
-
-    # def __init__(self, *args, **kwargs ):
-    #     super(ItemForm, self).__init__(*args, **kwargs)
-    #     self.fields['item_list'].queryset = TodoList.objects.all()
-
+        widgets = {'due': DateInput(attrs={'class': 'datepicker'})}

@@ -15,4 +15,6 @@ urlpatterns = [
     path('item/<int:list_pk>/<int:pk>/toggle', views.item_toggle, name='item_toggle'),
     path('statistics/', views.statistics, name='statistics'),
     path('item/<int:pk>/toggle/', views.item_toggle_listless, name='item_toggle_listless'),
+    path('json-example/', views.json_example, name='json_example'),
+    path('statistics/', views.statistics, name='statistics'),
 ]

@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Count, Q
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+import json
+from django.http import JsonResponse
 from .models import TodoItem
 from .models import TodoList
 from .forms import ItemForm
@@ -127,7 +130,51 @@ def list_remove(request, pk):
     return redirect('list_list')
 
 
-@login_required
-def statistics(request):
-    return render(request, 'todolist/statistics.html')
+def json_example(request):
+    return render(request, 'todolist/json_example.html')
 
+
+def list_done_bar(request):
+
+    dataset = TodoItem.objects.\
+        values('item_list__list_title').\
+        annotate(item_done_count=Count('item_list', filter=Q(done=True, )),
+                item_not_done_count=Count('item_list', filter=Q(done=False))).\
+        order_by('item_list')
+
+    categories = list()
+    done_series_data = list()
+    not_done_series_data = list()
+
+    for entry in dataset:
+        categories.append('%s' % entry['item_list__list_title'])
+        done_series_data.append(entry['item_done_count'])
+        not_done_series_data.append(entry['item_not_done_count'])
+
+    done_series = {
+        'name': 'Done',
+        'data': done_series_data,
+        'color': 'green'
+    }
+
+    not_done_series = {
+        'name': 'Not done',
+        'data': not_done_series_data,
+        'color': 'red'
+    }
+
+    chart = {
+        'chart': {'type': 'column'},
+        'title': {'text': 'Items done/not done per list'},
+        'xAxis': {'categories': categories},
+        'series': [done_series, not_done_series]
+    }
+
+    dump = json.dumps(chart)
+
+    return dump
+
+
+def statistics(request):
+    bar = list_done_bar(request)
+    return render(request, 'todolist/statistics.html', {'barchart': bar})
