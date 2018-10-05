@@ -20,7 +20,7 @@ class TodoList(models.Model):
 class TodoItem(models.Model):
     item_title = models.CharField(max_length=200, null=False, blank=False)
     item_description = models.TextField(max_length=200, null=True, blank=True)
-    item_list = models.ForeignKey(TodoList, related_name="items", on_delete=models.DO_NOTHING, null=False)
+    item_list = models.ForeignKey(TodoList, related_name="items", on_delete=models.CASCADE, null=False, default=1)
     due = models.DateTimeField(null=True, blank=True)
     done = models.BooleanField(default=False)
     modified_date = models.DateTimeField(

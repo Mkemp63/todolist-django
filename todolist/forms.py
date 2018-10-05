@@ -14,13 +14,9 @@ class ItemForm(forms.ModelForm):
 
     class Meta:
         model = TodoItem
-        fields = ('item_title', 'item_list', 'item_description', 'due', 'done')
+        fields = ('item_title', 'item_description', 'due', 'done')
 
-    def __init__(self, *args, **kwargs ):
-        super(ItemForm, self).__init__(*args, **kwargs)
-        self.fields['item_list'].queryset = TodoList.objects.all()
+    # def __init__(self, *args, **kwargs ):
+    #     super(ItemForm, self).__init__(*args, **kwargs)
+    #     self.fields['item_list'].queryset = TodoList.objects.all()
 
-class SearchForm(forms.Form):
-    q = forms.CharField(
-        widget=forms.widgets.TextInput(attrs={'size': 35})
-    )

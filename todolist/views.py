@@ -5,11 +5,7 @@ from .models import TodoItem
 from .models import TodoList
 from .forms import ItemForm
 from .forms import ListForm
-from django.db.models import Q
-from .forms import SearchForm
-from chartit import DataPool, Chart
-
-
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def item_list(request):
@@ -23,11 +19,12 @@ def item_detail(request, pk):
 
 
 @login_required
-def item_new(request):
+def item_new(request, list_id):
     if request.method == "POST":
         form = ItemForm(request.POST)
         if form.is_valid():
             item = form.save(commit=False)
+            item.item_list = get_object_or_404(TodoList, pk=list_id)
             item.author = request.user
             item.created_date = timezone.now()
             item.save()
@@ -35,7 +32,6 @@ def item_new(request):
     else:
         form = ItemForm()
     return render(request, 'todolist/item_edit.html', {'form': form})
-
 
 
 @login_required
@@ -66,15 +62,16 @@ def item_toggle(request, pk, list_pk):
     item = get_object_or_404(TodoItem, pk=pk)
     item.done = not item.done
     item.save()
-    list_detail(request, list_pk)
-    return redirect('item_toggle_items', pk=list_pk)
+    return list_detail(request, list_pk)
 
 
+@login_required
 def item_toggle_listless(request, pk):
     item = get_object_or_404(TodoItem, pk=pk)
     item.done = not item.done
     item.save()
     return redirect('item_list')
+
 
 def list_list(request):
     lists = TodoList.objects.order_by('list_priority')
@@ -84,7 +81,12 @@ def list_list(request):
 def list_detail(request, pk):
     list = get_object_or_404(TodoList, pk=pk)
     items = list.items.all()
-    return render(request, 'todolist/list_detail.html', {'list': list, 'items': items})
+    try:
+        members = TodoItem.objects.filter(item_list=list.id).latest('modified_date').modified_date
+        return render(request, 'todolist/list_detail.html', {'list': list, 'items': items, 'members': members})
+    except ObjectDoesNotExist:
+        return render(request, 'todolist/list_detail.html', {'list': list, 'items': items})
+
 
 
 @login_required
@@ -125,6 +127,7 @@ def list_remove(request, pk):
     return redirect('list_list')
 
 
+@login_required
 def statistics(request):
     return render(request, 'todolist/statistics.html')
 
